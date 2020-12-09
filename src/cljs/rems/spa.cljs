@@ -296,8 +296,8 @@
       [dev-reload-button])
     [:div.footer-text (text :t/footer)]]])
 
-(defn logo []
-  [:div.logo [:div.container.img]])
+;; (defn logo []
+;;   [:div.logo [:div.container.img]])
 
 (defn main-content [_page-id _grab-focus?]
   (let [on-update (fn [this]
@@ -337,7 +337,7 @@
     (lazy-load-data!)
     [:div
      [nav/navigation-widget]
-     [logo]
+    ;;  [logo]
      [main-content page-id grab-focus?]
      [footer]]))
 

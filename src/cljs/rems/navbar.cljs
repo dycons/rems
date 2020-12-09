@@ -60,14 +60,33 @@
               text (get-in page [:translations language :title] (text :t/missing))]
           [nav-link url text])))))
 
+(defn logo []
+  [:div.logo [:div.img]])
+
+;; [location @(rf/subscribe [:path])
+;;  active? (case match-mode
+;;            :exact
+;;            (= location path)
+;;                   ;; default: prefix
+;;            (str/starts-with? location path))]
+
 (defn navbar-items [e identity]
   ;;TODO: get navigation options from subscription
   (let [roles (:roles identity)
         config @(rf/subscribe [:rems.config/config])
-        catalogue-is-public (:catalogue-is-public config)]
+        catalogue-is-public (:catalogue-is-public config)
+        location @(rf/subscribe [:path])]
     [e (into [:div.navbar-nav.mr-auto
+              
               (when-not (:user identity)
-                [nav-link "/" (text :t.navigation/home) :exact])
+                ;; [nav-link "/" (text :t.navigation/home) :exact])
+                [atoms/link {:class (str "nav-link" (if (= location "/") " active" ""))
+                                                         
+                  ;; default: prefix
+                    
+                             :data-toggle "collapse"
+                             :data-target ".navbar-collapse.show"}
+                 (url-dest "/") [logo]])
               (when (or (roles/is-logged-in? roles) catalogue-is-public)
                 [nav-link "/catalogue" (text :t.navigation/catalogue)])
               (when (roles/show-applications? roles)
@@ -100,7 +119,9 @@
   (let [identity @(rf/subscribe [:identity])]
     [:div.fixed-top
      [skip-navigation]
-     [:div.navbar-top-bar [:div.navbar-top-left] [:div.navbar-top-right]]
+     
+     [:div.navbar-top-bar
+      [:div.navbar-top-left] [:div.navbar-top-right]]
      [:div.navbar-wrapper.container-fluid
       [navbar-normal identity]
       [navbar-small identity]]
