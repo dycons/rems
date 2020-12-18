@@ -63,13 +63,6 @@
 (defn logo []
   [:div.logo [:div.img]])
 
-;; [location @(rf/subscribe [:path])
-;;  active? (case match-mode
-;;            :exact
-;;            (= location path)
-;;                   ;; default: prefix
-;;            (str/starts-with? location path))]
-
 (defn navbar-items [e identity logo?]
   ;;TODO: get navigation options from subscription
   (let [roles (:roles identity)
@@ -78,11 +71,11 @@
         location @(rf/subscribe [:path])]
     [e (into [:div.navbar-nav.mr-auto
               (if logo?
-               (when-not (:user identity)
-                [atoms/link {:class (str "nav-link" (if (= location "/") " active" ""))
-                             :data-toggle "collapse"
-                             :data-target ".navbar-collapse.show"}
-                 (url-dest "/") [logo]])
+                (when-not (:user identity)
+                  [atoms/link {:class (str "nav-link" (if (= location "/") " active" ""))
+                               :data-toggle "collapse"
+                               :data-target ".navbar-collapse.show"}
+                   (url-dest "/") [logo]])
                 nil)
               (when (or (roles/is-logged-in? roles) catalogue-is-public)
                 [nav-link "/catalogue" (text :t.navigation/catalogue)])

@@ -98,8 +98,7 @@
                            :background-repeat :no-repeat
                            :background-position [[:center :center]]}]
                          [:.logo {:height logo-height
-                                  :min-height logo-height}]
-                         ))
+                                  :min-height logo-height}]))
    (stylesheet/at-media {:max-width (u/px 870)}
                         [:.user-widget [:.icon-description {:display "none"}]])
    (stylesheet/at-media {:min-width (u/px 480)}
@@ -339,7 +338,6 @@
            :flex-direction :column
            :padding-top recalculated-menu-height
            :scroll-behavior :smooth}]
-   [:*:focus {:border "1px solid red"}]
    [:h1 :h2 {:font-weight 400}]
    [:h1 {:margin-bottom (u/rem 2)}]
    [:#app {:min-height (u/percent 100)
