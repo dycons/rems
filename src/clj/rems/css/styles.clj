@@ -35,7 +35,7 @@
 (def content-width (u/px 1200))
 (def logo-height (u/px 30))
 (def menu-height 56)
-(def recalculated-menu-height (u/px (int (+ menu-height 10))))
+(def recalculated-menu-height (u/px (int (+ menu-height 12))))
 
 (defn resolve-image [path]
   (when path
@@ -350,7 +350,7 @@
    [:.fixed-top {:background-color "#fff"
                  :border-bottom (get-theme-attribute :header-border "3px solid #ccc")
                  :box-shadow (get-theme-attribute :header-shadow :table-shadow)
-                 :max-height recalculated-menu-height}]
+                 :min-height recalculated-menu-height}]
    [:.skip-navigation {:position :absolute
                        :left (u/em -1000)}
     [:&:active
