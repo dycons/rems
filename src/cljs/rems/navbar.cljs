@@ -70,23 +70,20 @@
 ;;                   ;; default: prefix
 ;;            (str/starts-with? location path))]
 
-(defn navbar-items [e identity]
+(defn navbar-items [e identity logo?]
   ;;TODO: get navigation options from subscription
   (let [roles (:roles identity)
         config @(rf/subscribe [:rems.config/config])
         catalogue-is-public (:catalogue-is-public config)
         location @(rf/subscribe [:path])]
     [e (into [:div.navbar-nav.mr-auto
-              
-              (when-not (:user identity)
-                ;; [nav-link "/" (text :t.navigation/home) :exact])
+              (if logo?
+               (when-not (:user identity)
                 [atoms/link {:class (str "nav-link" (if (= location "/") " active" ""))
-                                                         
-                  ;; default: prefix
-                    
                              :data-toggle "collapse"
                              :data-target ".navbar-collapse.show"}
                  (url-dest "/") [logo]])
+                nil)
               (when (or (roles/is-logged-in? roles) catalogue-is-public)
                 [nav-link "/catalogue" (text :t.navigation/catalogue)])
               (when (roles/show-applications? roles)
@@ -104,11 +101,11 @@
     [:button.navbar-toggler
      {:type :button :data-toggle "collapse" :data-target "#small-navbar"}
      "\u2630"]
-    [navbar-items :div#big-navbar.collapse.navbar-collapse.mr-3 identity]]
+    [navbar-items :div#big-navbar.collapse.navbar-collapse.mr-3 identity true]]
    [:div.navbar [user-widget (:user identity)]]])
 
 (defn navbar-small [user]
-  [navbar-items :div#small-navbar.collapse.navbar-collapse.hidden-md-up user])
+  [navbar-items :div#small-navbar.collapse.navbar-collapse.hidden-md-up user false])
 
 (defn skip-navigation []
   [:a.skip-navigation
@@ -119,7 +116,7 @@
   (let [identity @(rf/subscribe [:identity])]
     [:div.fixed-top
      [skip-navigation]
-     
+
      [:div.navbar-top-bar
       [:div.navbar-top-left] [:div.navbar-top-right]]
      [:div.navbar-wrapper.container-fluid
