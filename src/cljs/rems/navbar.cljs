@@ -61,22 +61,15 @@
           [nav-link url text])))))
 
 (defn logo []
-  [:div.logo [:div.img]])
+  [:div.logo {:class "navbar-brand"}
+   [:div.img]])
 
-(defn navbar-items [e identity logo?]
+(defn navbar-items [e identity]
   ;;TODO: get navigation options from subscription
   (let [roles (:roles identity)
         config @(rf/subscribe [:rems.config/config])
-        catalogue-is-public (:catalogue-is-public config)
-        location @(rf/subscribe [:path])]
+        catalogue-is-public (:catalogue-is-public config)]
     [e (into [:div.navbar-nav.mr-auto
-              (if logo?
-                (when-not (:user identity)
-                  [atoms/link {:class (str "nav-link" (if (= location "/") " active" ""))
-                               :data-toggle "collapse"
-                               :data-target ".navbar-collapse.show"}
-                   (url-dest "/") [logo]])
-                nil)
               (when (or (roles/is-logged-in? roles) catalogue-is-public)
                 [nav-link "/catalogue" (text :t.navigation/catalogue)])
               (when (roles/show-applications? roles)
@@ -88,17 +81,20 @@
              (navbar-extra-pages))
      [language-switcher]]))
 
-(defn navbar-normal [identity]
-  [:nav.navbar-flex
-   [:div.navbar.navbar-expand-sm.flex-fill
-    [:button.navbar-toggler
-     {:type :button :data-toggle "collapse" :data-target "#small-navbar"}
-     "\u2630"]
-    [navbar-items :div#big-navbar.collapse.navbar-collapse.mr-3 identity true]]
-   [:div.navbar [user-widget (:user identity)]]])
+(defn navbar-normal [identity logo?]
+    [:nav.navbar-flex
+     [:div.navbar.navbar-expand-sm.flex-fill
+      (if logo?
+         [logo]
+        nil)
+      [:button.navbar-toggler
+       {:type :button :data-toggle "collapse" :data-target "#small-navbar"}
+       "\u2630"]
+      [navbar-items :div#big-navbar.collapse.navbar-collapse.mr-3 identity]]
+     [:div.navbar [user-widget (:user identity)]]])
 
 (defn navbar-small [user]
-  [navbar-items :div#small-navbar.collapse.navbar-collapse.hidden-md-up user false])
+  [navbar-items :div#small-navbar.collapse.navbar-collapse.hidden-md-up user])
 
 (defn skip-navigation []
   [:a.skip-navigation
@@ -109,12 +105,11 @@
   (let [identity @(rf/subscribe [:identity])]
     [:div.fixed-top
      [skip-navigation]
-
      [:div.navbar-top-bar
       [:div.navbar-top-left] [:div.navbar-top-right]]
      [:div.navbar-wrapper.container-fluid
-      [navbar-normal identity]
-      [navbar-small identity]]
+      [navbar-normal identity true]
+      [navbar-small identity false]]
      [:div.navbar-bottom-bar]]))
 
 (defn guide []

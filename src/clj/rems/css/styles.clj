@@ -33,7 +33,7 @@
       (or attr-value (recur (rest attr-names))))))
 
 (def content-width (u/px 1200))
-(def logo-height (u/px 30))
+(def logo-height (u/px 40))
 (def menu-height 56)
 (def recalculated-menu-height (u/px (int (+ menu-height 12))))
 
@@ -104,7 +104,9 @@
    (stylesheet/at-media {:min-width (u/px 480)}
                         [:.commands {:white-space "nowrap"}])
    (stylesheet/at-media {:prefers-reduced-motion :reduce}
-                        [:body {:scroll-behavior :auto}])))
+                        [:body {:scroll-behavior :auto}])
+   (stylesheet/at-media {:max-width (u/px 480)}
+                        [:.navbar-brand {:display "none"}])))
 
 (defn- generate-phase-styles []
   [:.phases {:width "100%"
@@ -538,7 +540,7 @@
                    :min-width "100%"}]
 
    ;; Logo, login, etc.
-   [:.logo {:height "100%"
+   [:.logo {:height logo-height
             :background-color (get-theme-attribute :logo-bgcolor)
             :width "100px"}]
    [(s/descendant :.logo :.img) {:height "100%"
